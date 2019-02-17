@@ -1,8 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:movie_hero/page/HomePage.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(MovieHeroApp());
 
-class MyApp extends StatelessWidget {
+class MovieHeroApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      title: 'Reddit Flutter',
+      theme: new ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+
+
+
+
+//TODO: Remove all below some time
+class ObsoleteMyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
