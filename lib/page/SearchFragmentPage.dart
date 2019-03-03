@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:movie_hero/widget/HeroVideoPlayer.dart';
-import 'package:http/http.dart' as http;
+import 'package:movie_hero/domain/VideoInfo.dart' as VideoInfo;
 
 class SearchFragmentPage extends StatefulWidget {
   SearchFragmentPage({Key key}) : super(key: key);
@@ -9,6 +9,7 @@ class SearchFragmentPage extends StatefulWidget {
 }
 
 class SearchFragmentPageState extends State<SearchFragmentPage> {
+  List<VideoInfo.VideoInfo> videoInfoList = [];
 
   @override
   void initState() {
@@ -22,9 +23,9 @@ class SearchFragmentPageState extends State<SearchFragmentPage> {
       home: Scaffold(
         appBar: AppBar(
             title: TextField(
-          decoration: new InputDecoration(hintText: 'Search fragment by phrase'),
-          onSubmitted: search,
-        )),
+              decoration: new InputDecoration(hintText: 'Search fragment by phrase'),
+              onSubmitted: search,
+            )),
         body: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -39,12 +40,29 @@ class SearchFragmentPageState extends State<SearchFragmentPage> {
 
 
   void search(phrase) {
+    VideoInfo.fetchVideoInfoList(phrase).then((result) {
+      videoInfoList = result;
+      print(result);
+    });
     print("finish ${phrase}");
-    http.Client().get('http://192.168.1.73:8082/video/subtitle?phrase=${phrase}');
+  }
+
+//  _renderBody() {
+//    return FutureBuilder<List<Topics>>(
+//        future: fetchTopics(http.Client()),
+//        builder: (context, snapshot) {
+//          if (snapshot.hasError) print(snapshot.error);
+//
+//          return snapshot.hasData
+//              ? TopicsList(topics: snapshot.data)
+//              : Center(child: CircularProgressIndicator());
+//        }
+//    );
+//  }
+
 //    setState(() {
 //      _controller = VideoPlayerController.network('http://192.168.1.73:8082/video/video?phrase=${phrase}')
 //        ..initialize();
 //      _controller.setLooping(true);
-//    });
-  }
+//    });}
 }
