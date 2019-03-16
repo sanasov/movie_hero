@@ -12,9 +12,7 @@ Future<List<VideoInfo>> fetchVideoInfoList(String phrase) async {
 
 List<VideoInfo> parseVideoInfo(String responseBody) {
   print(responseBody);
-  return json.decode(responseBody)
-      .map<VideoInfo>((sub) => VideoInfo.fromJson(sub))
-      .toList();
+  return json.decode(responseBody).map<VideoInfo>((sub) => VideoInfo.fromJson(sub)).toList();
 }
 
 class VideoInfo {
@@ -26,5 +24,9 @@ class VideoInfo {
 
   factory VideoInfo.fromJson(Map<String, dynamic> json) {
     return VideoInfo(filmId: json['filmId'], lines: json['lines'].cast<String>(), numSeq: json['numSeq']);
+  }
+
+  String linesAsString() {
+    return lines.reduce((l1, l2) => l1 + "\n" + l2);
   }
 }

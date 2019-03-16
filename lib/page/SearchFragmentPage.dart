@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:movie_hero/widget/HeroVideoPlayer.dart';
 import 'package:movie_hero/domain/VideoInfo.dart' as VideoInfo;
+import 'package:movie_hero/widget/PhraseListWidget.dart';
 
 class SearchFragmentPage extends StatefulWidget {
   SearchFragmentPage({Key key}) : super(key: key);
@@ -19,30 +20,22 @@ class SearchFragmentPageState extends State<SearchFragmentPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Video Demo',
-      home: Scaffold(
-        appBar: AppBar(
-            title: TextField(
+        title: 'Video Demo',
+        home: Scaffold(
+            appBar: AppBar(
+                title: TextField(
               decoration: new InputDecoration(hintText: 'Search fragment by phrase'),
               onSubmitted: search,
             )),
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            new HeroVideoPlayer('http://192.168.1.73:8082/video/video?phrase=mother'),
-            Column(children: [Text("Ola"), Text("Ola2s")])
-          ],
-        ),
-      ),
-    );
+            body: videoInfoList.isNotEmpty ? HeroVideoPlayer(videoInfoList) : new Container()));
   }
-
 
   void search(phrase) {
     VideoInfo.fetchVideoInfoList(phrase).then((result) {
-      videoInfoList = result;
-      print(result);
+      setState(() {
+        videoInfoList = result;
+        print(result);
+      });
     });
     print("finish ${phrase}");
   }

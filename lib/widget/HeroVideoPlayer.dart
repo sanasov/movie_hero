@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:movie_hero/domain/VideoInfo.dart';
+import 'package:movie_hero/domain/urls.dart' as urls;
+import 'package:movie_hero/widget/PhraseListWidget.dart';
 import 'package:video_player/video_player.dart';
 
 class HeroVideoPlayer extends StatefulWidget {
-  final String url;
+  final List<VideoInfo> videoInfoList;
 
-  HeroVideoPlayer(this.url);
+  HeroVideoPlayer(this.videoInfoList);
 
-  VideoPlayerState createState() => new VideoPlayerState(url);
+  VideoPlayerState createState() => new VideoPlayerState(videoInfoList);
 }
 
 class VideoPlayerState extends State<HeroVideoPlayer> {
@@ -14,19 +17,16 @@ class VideoPlayerState extends State<HeroVideoPlayer> {
   bool isFinish = false;
   bool autoPlay = true;
   num playCount = 0;
-  final String _url;
+  num currentVideoIndex = 0;
+  List<VideoInfo> _videoInfoList;
 
-  VideoPlayerState(this._url);
+  VideoPlayerState(this._videoInfoList);
 
   @override
   void initState() {
+    print(urls.VIDEO + "/${_videoInfoList[currentVideoIndex].filmId}/${_videoInfoList[currentVideoIndex].numSeq}");
     super.initState();
-    _controller = VideoPlayerController.network(_url)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      })
-      ..addListener(playerListeners);
+    initVideo();
   }
 
   @override
@@ -37,6 +37,19 @@ class VideoPlayerState extends State<HeroVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    return Row(
+      // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      //  crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _renderPlayer(),
+        Container(
+            child: new PhraseListWidget(this._videoInfoList, this.currentVideoIndex),
+            width: 200) //Container(child:, height: 100, width: 200)
+      ],
+    );
+  }
+
+  Widget _renderPlayer() {
     return new Stack(alignment: AlignmentDirectional.center, children: [
       Container(
         child: _controller.value.initialized
@@ -76,8 +89,20 @@ class VideoPlayerState extends State<HeroVideoPlayer> {
       setState(() {
         isFinish = true;
         playCount++;
+        currentVideoIndex++;
+        initVideo();
       });
     }
+  }
+
+  initVideo() {
+    _controller = VideoPlayerController.network(
+        urls.VIDEO + "/${_videoInfoList[currentVideoIndex].filmId}/${_videoInfoList[currentVideoIndex].numSeq}")
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      })
+      ..addListener(playerListeners);
   }
 
   autoplayListener() {
